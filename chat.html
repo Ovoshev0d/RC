@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+ <meta charset="UTF-8">
+ <title>Чат с загрузкой файлов</title>
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background: #f5f5f5;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ }
+
+.chat-container {
+ width: 400px;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+ background: white;
+ }
+
+.chat-header {
+ background: #2c3e50;
+ color: white;
+ padding: 20px;
+ text-align: center;
+ }
+
+.chat-window {
+ height: 400px;
+ padding: 20px;
+ background: #f8f9fa;
+ overflow-y: auto;
+ display: flex;
+ flex-direction: column;
+ }
+
+.message {
+ margin: 10px;
+ padding: 12px;
+ border-radius: 8px;
+ max-width: 70%;
+ position: relative;
+ }
+
+.message--user {
+ background: #007bff;
+ color: white;
+ align-self: flex-end;
+ }
+
+.message--other {
+ background: #e9ecef;
+ color: #333;
+ align-self: flex-start;
+ }
+
+.message-sender {
+ font-weight: bold;
+ }
+
+.message-form {
+ padding: 15px;
+ border-top: 1px solid #ddd;
+ display: flex;
+ flex-direction: column;
+ }
+
+.message-form input {
+ width: 100%;
+ padding: 10px;
+ margin-bottom: 10px;
+ border: 1px solid #ddd;
+ border-radius: 4px;
+ }
+
+.message-form button {
+ padding: 10px 15px;
+ background: #007bff;
+ color: white;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+ margin-top: 10px;
+ }
+
+.file-preview {
+ margin-top: 10px;
+ cursor: pointer;
+ }
+
+.file-preview img {
+ max-width: 100%;
+ height: auto;
+ }
+ </style>
+</head>
+<body>
+ <div class="chat-container">
+ <div class="chat-header">
+ <h1>Чат</h1>
+ </div>
+ 
+ <div class="chat-window" id="chat-window">
+ <!-- Сообщения будут отображаться здесь -->
+ </div>
+
+ <div class="message-form">
+ <input type="text" id="sender-name" placeholder="Ваше имя" required>
+ <input type="text" id="message-input" placeholder="Сообщение">
+ <input type="file" id="file-input" accept="image/*,video/*,application/*" style="display: none;">
+ <button onclick="chooseFile()">📁 Прикрепить файл</button>
+ <button onclick="sendMessage()">Отправить</button>
+ </div>
+ </div>
+
+ <script>
+ let currentUser = 'Пользователь 1'; // Текущий пользователь
+ let selectedFile = null;
+
+ function chooseFile() {
+ document.getElementById('file-input').click();
+ }
+
+ function handleFileSelect(event) {
+ selectedFile = event.target.files[0];
+ }
+
+ function sendMessage() {
+ const senderName = document.getElementById('sender-name').value;
+ const messageText = document.getElementById('message-input').value;
+ const chatWindow = document.getElementById('chat-window');
+ const isUser = senderName === currentUser;
+ 
+ if (senderName) {
+ const messageDiv = document.createElement('div');
+ messageDiv.classList.add('message');
+ 
+ if (isUser) {
+ messageDiv.classList.add('message--user');
+ } else {
+ messageDiv
