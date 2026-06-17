@@ -1,145 +1,148 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
- <meta charset="UTF-8">
- <title>Чат с разными цветами</title>
- <style>
- * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
- }
-
- body {
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
- background: #f5f5f5;
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100vh;
- }
-
- .chat-container {
- width: 400px;
- border-radius: 12px;
- overflow: hidden;
- box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
- background: white;
- }
-
- .chat-header {
- background: #2c3e50;
- color: white;
- padding: 20px;
- text-align: center;
- }
-
- .chat-window {
- height: 400px;
- padding: 20px;
- background: #f8f9fa;
- overflow-y: auto;
- display: flex;
- flex-direction: column;
- }
-
- .message {
- margin: 10px;
- padding: 12px;
- border-radius: 8px;
- max-width: 70%;
- position: relative;
- }
-
- .message--user {
- background: #007bff;
- color: white;
- align-self: flex-end; /* Справа */
- }
-
- .message--other {
- background: #e9ecef;
- color: #333;
- align-self: flex-start; /* Слева */
- }
-
- .message-sender {
- font-weight: bold;
- }
-
- .message-form {
- padding: 15px;
- border-top: 1px solid #ddd;
- display: flex;
- flex-direction: column;
- }
-
- .message-form input {
- width: 100%;
- padding: 10px;
- margin-bottom: 10px;
- border: 1px solid #ddd;
- border-radius: 4px;
- }
-
- .message-form button {
- padding: 10px 15px;
- background: #007bff;
- color: white;
- border: none;
- border-radius: 4px;
- cursor: pointer;
- margin-top: 10px;
- }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-Чат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+            height: 400px;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin-right: 10px;
+        }
+        .message-content {
+            border-radius: 10px;
+            padding: 10px;
+            position: relative;
+            max-width: 70%;
+        }
+        .incoming {
+            justify-content: flex-start;
+        }
+        .outgoing {
+            justify-content: flex-end;
+        }
+        .incoming .message-content {
+            background: #e1e1e1;
+        }
+        .outgoing .message-content {
+            background: #007bff;
+            color: white;
+        }
+        .chat-input {
+            display: flex;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
- <div class="chat-container">
- <div class="chat-header">
- <h1>Чат</h1>
- </div>
- 
- <div class="chat-window" id="chat-window">
- <!-- Сообщения будут отображаться здесь -->
- </div>
 
- <div class="message-form">
- <input type="text" id="sender-name" placeholder="Ваше имя" required>
- <input type="text" id="message-input" placeholder="Сообщение" required>
- <button onclick="sendMessage()">Отправить</button>
- </div>
- </div>
+<h1>Онлайн-Чат</h1>
+<div class="chat-container" id="chat"></div>
+<div class="chat-input">
+    <input type="text" id="name" placeholder="Ваше имя" required />
+    <input type="text" id="message" placeholder="Введите сообщение..." required disabled />
+    <button id="send" disabled>Отправить</button>
+</div>
 
- <script>
- let currentUser = 'Пользователь 1'; // Текущий пользователь
+<script>
+    const nameInput = document.getElementById("name");
+    const messageInput = document.getElementById("message");
+    const sendButton = document.getElementById("send");
+    const chatContainer = document.getElementById("chat");
 
- function sendMessage() {
- const senderName = document.getElementById('sender-name').value;
- const messageText = document.getElementById('message-input').value;
- const chatWindow = document.getElementById('chat-window');
- const isUser = senderName === currentUser;
+    nameInput.addEventListener("input", () => {
+        messageInput.disabled = !nameInput.value.trim();
+        sendButton.disabled = !nameInput.value.trim();
+    });
 
- if (senderName && messageText) {
- const messageDiv = document.createElement('div');
- messageDiv.classList.add('message');
- 
- if (isUser) {
- messageDiv.classList.add('message--user');
- } else {
- messageDiv.classList.add('message--other');
- }
+    sendButton.addEventListener("click", () => {
+        const messageText = messageInput.value.trim();
+        if (messageText && nameInput.value.trim()) {
+            const senderName = nameInput.value.trim();
+            addMessage(senderName, messageText);
+            messageInput.value = '';
+            messageInput.focus();
+        }
+    });
 
- messageDiv.innerHTML = `
- <div class="message-sender">${senderName}</div>
- <div class="message-text">${messageText}</div>
- `;
- 
- chatWindow.appendChild(messageDiv);
- chatWindow.scrollTop = chatWindow.scrollHeight;
- 
- document.getElementById('message-input').value = '';
- }
- }
- </script>
+    function addMessage(name, messageText) {
+        const color = randomColor();
+        const initials = name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+        const isOutgoing = (name === nameInput.value.trim());
+
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', isOutgoing ? 'outgoing' : 'incoming');
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.classList.add('avatar');
+        avatarDiv.style.backgroundColor = color;
+        avatarDiv.textContent = initials;
+
+        const messageContentDiv = document.createElement('div');
+        messageContentDiv.classList.add('message-content');
+        messageContentDiv.textContent = messageText;
+
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(messageContentDiv);
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function randomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
 </body>
 </html>
