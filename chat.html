@@ -96,6 +96,24 @@
     const sendButton = document.getElementById("send");
     const chatContainer = document.getElementById("chat");
 
+    document.addEventListener("DOMContentLoaded", loadChatHistory);
+
+    function loadChatHistory() {
+        const messages = [
+            { name: "Алексей", text: "Привет! Как дела?", date: new Date(Date.now() - 86400000 * 1) }, // 1 день назад
+            { name: "Ольга", text: "Все отлично, спасибо! А у тебя?", date: new Date(Date.now() - 86400000 * 1) },
+            { name: "Алексей", text: "Тоже хорошо, план на выходные?", date: new Date(Date.now() - 86400000 * 2) }, // 2 дня назад
+            { name: "Ольга", text: "Хочу отдохнуть, может, погуляем?", date: new Date(Date.now() - 86400000 * 2) },
+            { name: "Дмитрий", text: "Привет, команда!", date: new Date(Date.now() - 86400000 * 3) }, // 3 дня назад
+            { name: "Алексей", text: "Привет, Дмитрий!", date: new Date(Date.now() - 86400000 * 3) },
+        ];
+
+        messages.forEach(message => {
+            const formattedDate = message.date.toLocaleDateString() + ' ' + message.date.toLocaleTimeString();
+            addMessage(message.name, message.text, formattedDate);
+        });
+    }
+
     nameInput.addEventListener("input", () => {
         messageInput.disabled = !nameInput.value.trim();
         sendButton.disabled = !nameInput.value.trim();
@@ -111,7 +129,7 @@
         }
     });
 
-    function addMessage(name, messageText) {
+    function addMessage(name, messageText, date) {
         const color = randomColor();
         const initials = name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
         const isOutgoing = (name === nameInput.value.trim());
@@ -126,7 +144,7 @@
 
         const messageContentDiv = document.createElement('div');
         messageContentDiv.classList.add('message-content');
-        messageContentDiv.textContent = messageText;
+        messageContentDiv.innerHTML = `<strong>${name}</strong>: ${messageText} <span style="font-size: 0.8em; color: gray;">(${date ? date : ''})</span>`;
 
         messageDiv.appendChild(avatarDiv);
         messageDiv.appendChild(messageContentDiv);
