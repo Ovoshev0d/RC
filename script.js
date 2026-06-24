@@ -20,45 +20,45 @@ function searchImage() {
 
     // Проверяем, что введено число
     if (isNaN(number)) {
-        resultDiv.innerHTML = '<p class="error">Пожалуйста, введите корректный номер</p>';
+        resultDiv.innerHTML = '<p class="error">Пожалуйста, введите корректный PID</p>';
         return;
     }
 
     // Проверяем, есть ли такой номер в списке допустимых
     if (!validNumbers.includes(number)) {
-        resultDiv.innerHTML = `<p class="error">Картинка с номером ${number} не найдена в доступных номерах</p>`;
+        resultDiv.innerHTML = `<p class="error">PID с номером ${number} не найдена</p>`;
         return;
     }
 
     // Формируем путь к картинке
     const imagePath = `PLU RC2/${number}.jpg`;
 
-    resultDiv.innerHTML = '<p class="loading">Загрузка картинки...</p>';
+    resultDiv.innerHTML = '<p class="loading">Загрузка PID...</p>';
 
-    console.log(`Попытка загрузить картинку: ${imagePath}`);
+    console.log(`Попытка загрузить PID: ${imagePath}`);
 
     fetch(imagePath)
         .then(response => {
             if (response.ok) {
-                console.log(`Картинка ${number} успешно загружена`);
+                console.log(`PID ${number} успешно загружена`);
                 resultDiv.innerHTML = `
                     <div class="image-container">
-                        <img src="${imagePath}" alt="Картинка ${number}" onerror="handleImageError(${number})">
-                        <p>Картинка №${number}</p>
+                        <img src="${imagePath}" alt="PID ${number}" onerror="handleImageError(${number})">
+                        <p>PID${number}</p>
                     </div>
                 `;
             } else {
-                console.error(`Ошибка загрузки картинки ${number}: ${response.status}`);
+                console.error(`Ошибка загрузки ${number}: ${response.status}`);
                 handleImageError(number);
             }
         })
         .catch(error => {
-            console.error(`Ошибка при загрузке картинки ${number}:`, error);
+            console.error(`Ошибка при загрузке ${number}:`, error);
             handleImageError(number);
         });
 }
 
 function handleImageError(number) {
     console.warn(`Картинка №${number} не найдена или недоступна`);
-    resultDiv.innerHTML = `<p class="error">Картинка №${number} не найдена или недоступна</p>`;
+    resultDiv.innerHTML = `<p class="error">PID${number} не найдена или недоступен</p>`;
 }
