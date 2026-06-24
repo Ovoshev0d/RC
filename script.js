@@ -31,7 +31,7 @@ function searchImage() {
     }
 
     // Формируем путь к картинке
-    const imagePath = `PLU RC2/${number}.jpg`;
+    const imagePath = `PLU RC2/${number}.png`;
 
     resultDiv.innerHTML = '<p class="loading">Загрузка PLU...</p>';
 
